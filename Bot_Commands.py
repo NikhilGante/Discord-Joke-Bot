@@ -1,10 +1,11 @@
 import discord
 from discord.ext import commands
+import csv
 import random
-import pandas as pd
 from User_ID import User_ID
 
 client = commands.Bot(command_prefix = "--")
+Insults_path = "C:/Users/HP/OneDrive/Documents/GitHub/Insults.csv"
 
 @client.command(aliases = ["h", "hm", "help me"])
 async def help_me(context):
@@ -111,33 +112,21 @@ async def leave(parameter_list):
     
 @client.command()
 async def erase_all_insults(context):
-    print("erasing shit")
-    print(f"author_id: {context.author.id}")
-
     if(context.author.id ==  User_ID["Nikhil"]):
-        print("It is the supreme memer")
-        df = pd.read_csv("C:/Users/HP/OneDrive/Documents/GitHub/Discoxrd-Insult-Bot/Insults.csv", index_col = 0)
-        df = pd.dataframe({"User": "", "Insults" : ""})
-        print(f"df: {df}")
-        df.to_csv("C:/Users/HP/OneDrive/Documents/GitHub/Discord-Insult-Bot/Insults.csv")
+        Insults_File = open(Insults_path, "w")
+        Insults_File.write("")
     else:
-        context.send("Only supreme memer Nikhil has access to this command.")
+        context.send("Only supreme memer CodingBoy56 has access to this command.")
 
 @client.command(aliases = ["ei"])
 async def erase_insult(context, index):
-    df = pd.read_csv("C:/Users/HP/OneDrive/Documents/GitHub/Discord-Insult-Bot/Insults.csv", index_col = 0)
-    # df = pd.dataframe({"User": "", "Insults" : ""})
-    # rowData = df.loc[0]
-    idx = pd.df.Index(['Index', 'User', 'Insults'])
-    idx.delete(index)
-    # print(f"this is rowdata {rowData}")
-    print(f"df: {df}")
-    df.to_csv("C:/Users/HP/OneDrive/Documents/GitHub/Discord-Insult-Bot/Insults.csv")
+    pass
 
 
 @client.command(aliases = ["si", "show insults"])
 async def show_insults(context):
+    pass
+    # df = pd.read_csv("C:/Users/HP/OneDrive/Documents/GitHub/Insults.csv", index_col = 0)
+    # print(f"df: {df}")
+    # await context.send(df)
 
-    df = pd.read_csv("C:/Users/HP/OneDrive/Documents/GitHub/Discord-Insult-Bot/Insults.csv", index_col = 0)
-    print(f"df: {df}")
-    await context.send(df)

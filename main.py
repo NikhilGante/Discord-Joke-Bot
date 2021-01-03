@@ -40,10 +40,10 @@ async def on_message(message):
     if str(channel) == "bot-testing":
         await channel.send("in bot-testing")
 
-        df = pandas.read_csv("C:/Users/HP/OneDrive/Documents/GitHub/Discord-Insult-Bot/Insults.csv", index_col = 0)
+        df = pandas.read_csv("C:/Users/HP/OneDrive/Documents/GitHub/Insults.csv", index_col = 0)
         df = df.append({"User": str(author), "Insults": str(message.content)}, ignore_index = True)
         # df = df.append({}, ignore_index = True)
-        df.to_csv("C:/Users/HP/OneDrive/Documents/GitHub/Discord-Insult-Bot/Insults.csv") 
+        df.to_csv("C:/Users/HP/OneDrive/Documents/GitHub/Insults.csv") 
 
     await client.process_commands(message)
 
