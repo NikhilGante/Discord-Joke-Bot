@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import Insults
 import csv
 import random
 from User_ID import User_ID
@@ -113,20 +114,24 @@ async def leave(parameter_list):
 @client.command()
 async def erase_all_insults(context):
     if(context.author.id ==  User_ID["Nikhil"]):
-        Insults_File = open(Insults_path, "w")
-        Insults_File.write("")
+        Insults.write_header()
+        Insults.Insults_File.write("")
+        Insults.next_index = 1
     else:
         context.send("Only supreme memer CodingBoy56 has access to this command.")
 
 @client.command(aliases = ["ei"])
 async def erase_insult(context, index):
-    pass
-
+    Insults.download_data()
+    Insults.data.pop(index)
+    print(Insults.data)
+    for row in Insults.data:
+        num = int(row[0])
+        num -= 1
+    Insults.upload_data()
 
 @client.command(aliases = ["si", "show insults"])
 async def show_insults(context):
-    pass
-    # df = pd.read_csv("C:/Users/HP/OneDrive/Documents/GitHub/Insults.csv", index_col = 0)
-    # print(f"df: {df}")
-    # await context.send(df)
-
+    Insults.download_data()
+    print(Insults.data)
+    await context.send(Insults.data)

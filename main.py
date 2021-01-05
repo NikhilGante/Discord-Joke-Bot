@@ -1,10 +1,11 @@
 import discord
+import csv
+import Insults
 from discord.ext import commands
 from Channel_ID import text, voice
 from User_ID import User_ID, bot_Token
 import Bot_Commands
 from Bot_Commands import client
-import pandas
 
 
 @client.event
@@ -38,15 +39,14 @@ async def on_message(message):
             await channel.send("Liam, you're kinda cute")
         
     if str(channel) == "bot-testing":
-        await channel.send("in bot-testing")
-
-        df = pandas.read_csv("C:/Users/HP/OneDrive/Documents/GitHub/Insults.csv", index_col = 0)
-        df = df.append({"User": str(author), "Insults": str(message.content)}, ignore_index = True)
-        # df = df.append({}, ignore_index = True)
-        df.to_csv("C:/Users/HP/OneDrive/Documents/GitHub/Insults.csv") 
+        # await channel.send("in bot-testing")
+        Insults.download_data()
+        with open(Bot_Commands.Insults_path, "a") as Insults_File: 
+            Insults_File.write(f"\n{Insults.next_index}, {author}, {message.content},")
+        
 
     await client.process_commands(message)
-
+    
 @client.event
 async def on_command_error(context, error):
     if isinstance(error, commands.CommandNotFound):
@@ -71,10 +71,7 @@ async def on_ready():
     bot_testing_channel = client.get_channel(793377011569393665)
 
     await bot_testing_channel.send("Initialized.")
-    await client.change_presence(status = discord.Status.online, activity = discord.Game("with Chandu's schlong"))
-
-    # df = pandas.DataFrame({"A": ["yo", "bitch"]})
-    # df.to_csv("C:/Users/HP/OneDrive/Documents/Visual Studio Code/Beginner Projects/Innovirus.exe/Insults.csv")
+    await client.change_presence(status = discord.Status.online, activity = discord.Game("with my schlong"))
 
 # botID is privatized
 client.run(bot_Token)
