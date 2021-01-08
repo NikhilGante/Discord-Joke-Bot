@@ -11,7 +11,7 @@ from Bot_Commands import client
 @client.event
 async def on_message(message):
     # bot_testing_channel = client.get_channel(Channel_ID.text["bot-testing"])
-    # bot_testing_channel.send("ligma penis") how to send to a specific channel
+    # bot_testing_channel.send("poggers") how to send to a specific channel
     author = message.author
     name = author.display_name
     id = author.id
@@ -22,28 +22,27 @@ async def on_message(message):
     if author == client.user: # ignores message if it was sent from bot
         return
 
-    if "--" not in text and id != User_ID["Nikhil"]:
+    if "--" not in text:
+            
+        if str(channel) == "bot-testing":
+            Insults.download_data()
+            Insults.upload_data()
+            with open (Bot_Commands.Insults_path, "a", newline = "") as Insults_File:
+                writer = csv.DictWriter(Insults_File, fieldnames = ["Index:", "Author:", "Insult:"])
+                writer.writerow({"Index:" : f"{len(Insults.data) + 1}", "Author:" : f"{author}", "Insult:" : f"{message.content}"})
+       
+        elif id != User_ID["Nikhil"]: #channel isn't bot-testing and user isn't me
+            print(f"The channel is: {channel}")
+            print(author)
+            print(name)
+            print(f"Id: {author.id}")
+            # await channel.send(f"I see you, {mention}")
 
-        # await channel.send(f"The channel is: {channel}")
-        print(f"The channel is: {channel}")
-        print(author)
-        print(name)
-        print(f"Id: {author.id}")
-        # await channel.send(f"I see you, {mention}")
-
-
-        if " pp " in text or "penis" in text:
+        if "pp" in text or "penis" in text or "dick" in text or "cock" in text:
             await channel.send("ligma penis")
 
         if id == User_ID["Liam"]:    
             await channel.send("Liam, you're kinda cute")
-        
-    if str(channel) == "bot-testing":
-        # await channel.send("in bot-testing")
-        Insults.download_data()
-        with open(Bot_Commands.Insults_path, "a") as Insults_File: 
-            Insults_File.write(f"\n{Insults.next_index}, {author}, {message.content},")
-        
 
     await client.process_commands(message)
     

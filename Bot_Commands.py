@@ -43,7 +43,7 @@ async def quotebook(context):
     Embed.set_author(name = "Nikki the chiken")
 
     await context.send(embed = Embed)
-
+# 74412C
 @client.command(aliases = ["p", "pf", "p_f", "print"])
 async def printf(context, phrase = "", amount = 0):
     for count in range(int(amount)):
@@ -113,25 +113,77 @@ async def leave(parameter_list):
     
 @client.command()
 async def erase_all_insults(context):
-    if(context.author.id ==  User_ID["Nikhil"]):
+    if(context.author.id == User_ID["Nikhil"]):
         Insults.write_header()
-        Insults.Insults_File.write("")
-        Insults.next_index = 1
     else:
         context.send("Only supreme memer CodingBoy56 has access to this command.")
 
 @client.command(aliases = ["ei"])
 async def erase_insult(context, index):
+    index = int(index)
     Insults.download_data()
-    Insults.data.pop(index)
-    print(Insults.data)
-    for row in Insults.data:
-        num = int(row[0])
-        num -= 1
-    Insults.upload_data()
+
+    if index > len(Insults.data) or index < 1:
+        await context.send("Index out of range")
+    else:
+        Insults.data.pop(index - 1)
+        for row in Insults.data[index - 1: len(Insults.data)]:
+            row["Index:"] = int(row["Index:"])
+            row["Index:"] -= 1
+        Insults.upload_data()
 
 @client.command(aliases = ["si", "show insults"])
 async def show_insults(context):
     Insults.download_data()
-    print(Insults.data)
-    await context.send(Insults.data)
+    final_msg = "Index:\t\tAuthor:\t\t\t\t\t\t Insult:" # adds header to message
+    for row in Insults.data:    # add rows to message
+        final_msg += f"\n{row['Index:']}\t\t\t\t {row['Author:']}\t{row['Insult:']}"
+
+    # Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
+    # Embed.add_field(name = "Sample name: ", value = "sample value", inline = False)
+    # Embed.set_footer(text = "footer shit haha")
+    # Embed.set_author(name = "Nikki the chiken")
+
+    # await context.message.author.send(embed = Embed)
+
+    # await context.send(Insults.data)
+    # print(final_msg)
+    await context.send(final_msg)
+
+@client.command(aliases = ["ps", "ppsize", "peepee size"])
+async def peepee_size(context):
+    size =  truncate(random.uniform(0, 10), 2)
+    author = str(context.author)
+    author = author[0:-5]
+    finalStr = (f"{author}'s peepee is {size} inches long.\n")
+    if size > 5:
+        finalStr += "What a damn Chad."
+    elif size < 3:
+        finalStr += "I got some viagra bro, if you ever need it."
+    else:
+        finalStr += "Ayo same."
+    await context.send(finalStr)
+
+@client.command(aliases = ["ri", "rand insult"])
+async def rand_insult(context, user: discord.Member = None):
+    Insults.download_data()
+    await get_insult(context, random.randint(0, len(Insults.data)), user)
+
+@client.command(aliases = ["gi", "get insult"])
+async def get_insult(context, index, user: discord.Member = None):
+    Insults.download_data()
+    if user == None:
+        print ("none reached")
+        mention = ""
+
+    else:
+        user = user.id
+        print ("mention reached")
+        mention = f"<@{user}>"
+
+    await context.send(f"{mention} {Insults.data[int(index) - 1]['Insult:']}")    
+
+def truncate(n, decimals=0):
+    multiplier = 10 ** decimals
+    return int(n * multiplier) / multiplier
+
