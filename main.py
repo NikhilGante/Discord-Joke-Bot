@@ -1,12 +1,12 @@
 import discord
 import csv
-import Insults
+import Logging_Functions
 from discord.ext import commands
 from Channel_ID import text, voice
 from User_ID import User_ID, bot_Token
 import Bot_Commands
 from Bot_Commands import client
-
+from Keep_Alive import keep_alive
 
 @client.event
 async def on_message(message):
@@ -24,12 +24,12 @@ async def on_message(message):
 
     if "--" not in text:
             
-        if str(channel) == "bot-testing":
-            Insults.download_data()
-            Insults.upload_data()
+        if str(channel) == "bot-requests":
+            Logging_Functions.download_data_insult()
+            Logging_Functions.upload_data_insult()
             with open (Bot_Commands.Insults_path, "a", newline = "") as Insults_File:
                 writer = csv.DictWriter(Insults_File, fieldnames = ["Index:", "Author:", "Insult:"])
-                writer.writerow({"Index:" : f"{len(Insults.data) + 1}", "Author:" : f"{author}", "Insult:" : f"{message.content}"})
+                writer.writerow({"Index:" : f"{len(Logging_Functions.data_insult) + 1}", "Author:" : f"{author}", "Insult:" : f"{message.content}"})
        
         elif id != User_ID["Nikhil"]: #channel isn't bot-testing and user isn't me
             print(f"The channel is: {channel}")
@@ -72,5 +72,7 @@ async def on_ready():
     await bot_testing_channel.send("Initialized.")
     await client.change_presence(status = discord.Status.online, activity = discord.Game("with my schlong"))
 
-# botID is privatized
-client.run(bot_Token)
+
+
+# keep_alive()    # keeps bot online via https web server
+client.run(bot_Token)   # botID is privatized

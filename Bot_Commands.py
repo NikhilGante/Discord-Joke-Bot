@@ -1,12 +1,13 @@
 import discord
 from discord.ext import commands
-import Insults
+from Logging_Functions import rankings_fieldnames, Insults_path, Rankings_Path
+import Logging_Functions
 import csv
+import operator
 import random
 from User_ID import User_ID
 
 client = commands.Bot(command_prefix = "--")
-Insults_path = "C:/Users/HP/OneDrive/Documents/GitHub/Insults.csv"
 
 @client.command(aliases = ["h", "hm", "help me"])
 async def help_me(context):
@@ -114,29 +115,29 @@ async def leave(parameter_list):
 @client.command()
 async def erase_all_insults(context):
     if(context.author.id == User_ID["Nikhil"]):
-        Insults.write_header()
+        Logging_Functions.write_header_insult()
     else:
         context.send("Only supreme memer CodingBoy56 has access to this command.")
 
 @client.command(aliases = ["ei"])
 async def erase_insult(context, index):
     index = int(index)
-    Insults.download_data()
+    Logging_Functions.download_data_insult()
 
-    if index > len(Insults.data) or index < 1:
+    if index > len(Logging_Functions.data_insult) or index < 1:
         await context.send("Index out of range")
     else:
-        Insults.data.pop(index - 1)
-        for row in Insults.data[index - 1: len(Insults.data)]:
+        Logging_Functions.data_insult.pop(index - 1)
+        for row in Logging_Functions.data_insult[index - 1: len(Logging_Functions.data_insult)]:
             row["Index:"] = int(row["Index:"])
             row["Index:"] -= 1
-        Insults.upload_data()
+        Logging_Functions.upload_data_insult()
 
 @client.command(aliases = ["si", "show insults"])
 async def show_insults(context):
-    Insults.download_data()
+    Logging_Functions.download_data_insult()
     final_msg = "Index:\t\tAuthor:\t\t\t\t\t\t Insult:" # adds header to message
-    for row in Insults.data:    # add rows to message
+    for row in Logging_Functions.data_insult:    # add rows to message
         final_msg += f"\n{row['Index:']}\t\t\t\t {row['Author:']}\t{row['Insult:']}"
 
     # Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
@@ -146,7 +147,7 @@ async def show_insults(context):
 
     # await context.message.author.send(embed = Embed)
 
-    # await context.send(Insults.data)
+    # await context.send(Logging_Functions.data_insult)
     # print(final_msg)
     await context.send(final_msg)
 
@@ -163,15 +164,49 @@ async def peepee_size(context):
     else:
         finalStr += "Ayo same."
     await context.send(finalStr)
+    
+    Logging_Functions.download_data_rank()
+    Logging_Functions.upload_data_rank()
+    with open (Rankings_Path, "a", newline = "") as Rankings_File:
+        writer = csv.DictWriter(Rankings_File, fieldnames = Logging_Functions.rankings_fieldnames)
+        writer.writerow({rankings_fieldnames[0] : f"{len(Logging_Functions.data_rank) + 1}",
+        rankings_fieldnames[1] : f"{author}", rankings_fieldnames[2] : f"{size}"})
+
+
+
+# @client.command(aliases = ["r"])
+
+
+# async def rank(context, index, user: discord.Member = None):
+#     def write_header_rank():
+#     with open (Insults_path, "w", newline = "") as Rankings_File:
+#         writer = csv.DictWriter(Insults_File, fieldnames = Logging_Functions.rankings_fieldnames)
+#         writer.writeheader()
+
+# def download_data():
+#     with open (Insults_path, newline = "") as Insults_File:
+#         reader = csv.DictReader(Insults_File, fieldnames = ["Index:", "Author:", "Insult:"])
+#         global header, data
+#         header = next(reader)
+#         data = list(reader) # converts reader to list
+       
+# def upload_data():
+#     with open (Insults_path, "w", newline = "") as Insults_File:
+#         writer = csv.DictWriter(Insults_File, fieldnames = ["Index:", "Author:", "Insult:"])
+#         writer.writeheader()
+#         writer.writerows(data)
+
+
+
 
 @client.command(aliases = ["ri", "rand insult"])
 async def rand_insult(context, user: discord.Member = None):
-    Insults.download_data()
-    await get_insult(context, random.randint(0, len(Insults.data)), user)
+    Logging_Functions.download_data_insult()
+    await get_insult(context, random.randint(0, len(Logging_Functions.data_insult)), user)
 
 @client.command(aliases = ["gi", "get insult"])
 async def get_insult(context, index, user: discord.Member = None):
-    Insults.download_data()
+    Logging_Functions.download_data_insult()
     if user == None:
         print ("none reached")
         mention = ""
@@ -181,9 +216,10 @@ async def get_insult(context, index, user: discord.Member = None):
         print ("mention reached")
         mention = f"<@{user}>"
 
-    await context.send(f"{mention} {Insults.data[int(index) - 1]['Insult:']}")    
+    await context.send(f"{mention} {Logging_Functions.data_insult[int(index) - 1]['Insult:']}")    
 
-def truncate(n, decimals=0):
+
+def truncate(n, decimals = 0):
     multiplier = 10 ** decimals
     return int(n * multiplier) / multiplier
 
