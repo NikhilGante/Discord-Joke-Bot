@@ -67,7 +67,7 @@ async def on_typing(channel, user, when):
 
 @client.event
 async def on_ready():
-    bot_testing_channel = client.get_channel(793377011569393665)
+    bot_testing_channel = client.get_channel(802791468279398411) # bot-testing channel in bot-testing server
 
     await bot_testing_channel.send("Initialized.")
     await client.change_presence(status = discord.Status.online, activity = discord.Game("with my schlong"))

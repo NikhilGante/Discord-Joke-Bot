@@ -5,51 +5,60 @@ import operator
 import csv
 from Bot_Commands import Rankings_Path
 
-# size =  truncate(random.uniform(0, 10), 2)
-# author = str(context.author)
-# author = author[0:-5]
-# finalStr = (f"{author}'s peepee is {size} inches long.\n")
-# if size > 5:
-#     finalStr += "What a damn Chad."
-# elif size < 3:
-#     finalStr += "I got some viagra bro, if you ever need it."
-# else:
-#     finalStr += "Ayo same."
-# await context.send(finalStr)
 
-def truncate(n, decimals = 0):
-    multiplier = 10 ** decimals
-    return int(n * multiplier) / multiplier
-    
-# size =  truncate(random.uniform(0, 10), 2)
-# author = "NikkiChiken#3809"
-# author = author[0:-5]
-# finalStr = (f"{author}'s peepee is {size} inches long.\n")
-# if size > 5:
-#     finalStr += "What a damn Chad."
-# elif size < 3:
-#     finalStr += "I got some viagra bro, if you ever need it."
-# else:
-#     finalStr += "Ayo same."
-# # await context.send(finalStr)
+# sorting stuff
+# Logging_Functions.write_header_rank()
 
+# author = "coggers"
+# size = 54
 # Logging_Functions.download_data_rank()
 # Logging_Functions.upload_data_rank()
 # with open (Rankings_Path, "a", newline = "") as Rankings_File:
-#     writer = csv.DictWriter(Rankings_File, fieldnames = Logging_Functions.rankings_fieldnames)
+#     writer = csv.DictWriter(Rankings_File, fieldnames = rankings_fieldnames)
 #     writer.writerow({rankings_fieldnames[0] : f"{len(Logging_Functions.data_rank) + 1}",
-#      rankings_fieldnames[1] : f"{author}", rankings_fieldnames[2] : f"{size}"})
+#     rankings_fieldnames[1] : f"{author}", rankings_fieldnames[2] : f"{size}"})
 
-# sorting stuff
+def sort(values):
+    for start_val in values:
+        greatest = start_val
+        for val in values[values.index(start_val) + 1: len(values)]:
+            if val > greatest:
+                greatest = val
+        temp = greatest
+        values[values.index(greatest)] = start_val
+        values[values.index(start_val)] = temp
+    return values
 
-# Logging_Functions.download_data_rank(False)
-with open (Rankings_Path, newline = "") as Rankings_File:
-    reader = csv.reader(Rankings_File)
-    global data_rank
-    next(reader)
-    data_rank = reader
-    Logging_Functions.data_rank = sorted(data_rank, key = operator.itemgetter(2), reverse = True)
-with open (Rankings_Path, "w", newline = "") as Rankings_File:
-    writer = csv.writer(Rankings_File)
-    writer.writerows(data_rank)
+def sort_data_rank():
+    Logging_Functions.download_data_rank()
+    data_rank = Logging_Functions.data_rank
+    values = []
+    for row in data_rank:
+        values.append(row[rankings_fieldnames[2]])
+ 
+    for start_val_id in range(len(values)-1):
+        # start_val = values[start_val_id]
+        # greatest = start_val
+        greatest_id = start_val_id
+        # vals_left = values[start_val_id + 1: len(values)]
+        for val_id in range(start_val_id, len(values)):
+            if values[val_id] > values[greatest_id]:    greatest_id = val_id
+
+        temp_val = values[greatest_id]
+        values[greatest_id] = values[start_val_id]
+        values[start_val_id] = temp_val
+
+        # Replaces appropriate rows in data_rank list
+        temp_row = data_rank[greatest_id]
+        data_rank[greatest_id] = data_rank[start_val_id]
+        data_rank[start_val_id] = temp_row
+
+    # gives each row the proper rank
+    for row in data_rank:
+        row[rankings_fieldnames[0]] = data_rank.index(row) + 1
+
+    Logging_Functions.upload_data_rank()
+
+# sort_data_rank()
+sort_data_rank()
 

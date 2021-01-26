@@ -132,11 +132,12 @@ async def erase_insult(context, index):
             row["Index:"] = int(row["Index:"])
             row["Index:"] -= 1
         Logging_Functions.upload_data_insult()
+        await context.send(f"Insult {index} succesfully deleted.")
 
 @client.command(aliases = ["si", "show insults"])
 async def show_insults(context):
     Logging_Functions.download_data_insult()
-    final_msg = "Index:\t\tAuthor:\t\t\t\t\t\t Insult:" # adds header to message
+    final_msg = "**Index:\t\tAuthor:\t\t\t\t\t\t Insult:**" # adds header to message
     for row in Logging_Functions.data_insult:    # add rows to message
         final_msg += f"\n{row['Index:']}\t\t\t\t {row['Author:']}\t{row['Insult:']}"
 
@@ -151,9 +152,28 @@ async def show_insults(context):
     # print(final_msg)
     await context.send(final_msg)
 
+@client.command(aliases = ["ri", "rand insult"])
+async def rand_insult(context, user: discord.Member = None):
+    Logging_Functions.download_data_insult()
+    await get_insult(context, random.randint(0, len(Logging_Functions.data_insult)), user)
+
+@client.command(aliases = ["gi", "get insult"])
+async def get_insult(context, index, user: discord.Member = None):
+    Logging_Functions.download_data_insult()
+    if user == None:
+        print ("none reached")
+        mention = ""
+
+    else:
+        user = user.id
+        print ("mention reached")
+        mention = f"<@{user}>"
+
+    await context.send(f"{mention} {Logging_Functions.data_insult[int(index) - 1]['Insult:']}")  
+
 @client.command(aliases = ["ps", "ppsize", "peepee size"])
 async def peepee_size(context):
-    size =  truncate(random.uniform(0, 10), 2)
+    size =  Logging_Functions.truncate(random.uniform(0, 10), 2)
     author = str(context.author)
     author = author[0:-5]
     finalStr = (f"{author}'s peepee is {size} inches long.\n")
@@ -172,12 +192,30 @@ async def peepee_size(context):
         writer.writerow({rankings_fieldnames[0] : f"{len(Logging_Functions.data_rank) + 1}",
         rankings_fieldnames[1] : f"{author}", rankings_fieldnames[2] : f"{size}"})
 
+@client.command(aliases = ["gr", "get rank"])
+async def get_rank(context):
+    Logging_Functions.sort_data_rank()
+    final_msg = "**Ranking:\tLength:\t\tOwner of PP:**" # adds header to message
+    for row in Logging_Functions.data_rank:    # add rows to message
+        final_msg += f"\n{row[rankings_fieldnames[0]]}\t\t\t\t\t {row[rankings_fieldnames[2]]}\t\t\t\t{row[rankings_fieldnames[1]]}"
+    print(final_msg)
+
+    # Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
+    # Embed.add_field(name = "Sample name: ", value = "sample value", inline = False)
+    # Embed.set_footer(text = "footer shit haha")
+    # Embed.set_author(name = "Nikki the chiken")
+
+    # await context.message.author.send(embed = Embed)
+
+    # await context.send(Logging_Functions.data_insult)
+    # print(final_msg)
+    await context.send(final_msg)
+
 
 
 # @client.command(aliases = ["r"])
+# async def rank(context, user: discord.Member = None):
 
-
-# async def rank(context, index, user: discord.Member = None):
 #     def write_header_rank():
 #     with open (Insults_path, "w", newline = "") as Rankings_File:
 #         writer = csv.DictWriter(Insults_File, fieldnames = Logging_Functions.rankings_fieldnames)
@@ -199,27 +237,4 @@ async def peepee_size(context):
 
 
 
-@client.command(aliases = ["ri", "rand insult"])
-async def rand_insult(context, user: discord.Member = None):
-    Logging_Functions.download_data_insult()
-    await get_insult(context, random.randint(0, len(Logging_Functions.data_insult)), user)
-
-@client.command(aliases = ["gi", "get insult"])
-async def get_insult(context, index, user: discord.Member = None):
-    Logging_Functions.download_data_insult()
-    if user == None:
-        print ("none reached")
-        mention = ""
-
-    else:
-        user = user.id
-        print ("mention reached")
-        mention = f"<@{user}>"
-
-    await context.send(f"{mention} {Logging_Functions.data_insult[int(index) - 1]['Insult:']}")    
-
-
-def truncate(n, decimals = 0):
-    multiplier = 10 ** decimals
-    return int(n * multiplier) / multiplier
-
+  
