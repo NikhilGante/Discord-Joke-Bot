@@ -175,7 +175,6 @@ async def get_insult(context, index, user: discord.Member = None):
 async def peepee_size(context):
     size =  Logging_Functions.truncate(random.uniform(0, 10), 2)
     author = str(context.author)
-    author = author[0:-5]
     finalStr = (f"{author}'s peepee is {size} inches long.\n")
     if size > 5:
         finalStr += "What a damn Chad."
@@ -205,10 +204,6 @@ async def get_rank(context, amount = 0):
         final_msg += f"\n{data_rank[row][rankings_fieldnames[0]]}\t\t\t\t\t\t"\
         f" {data_rank[row][rankings_fieldnames[2]]}\t\t\t\t{data_rank[row][rankings_fieldnames[1]]}"
     print(final_msg)
-    
-    # for row in Logging_Functions.data_rank:    # add rows to message
-    #     final_msg += f"\n{row[rankings_fieldnames[0]]}\t\t\t\t\t\t {row[rankings_fieldnames[2]]}\t\t\t\t{row[rankings_fieldnames[1]]}"
-    # print(final_msg)
 
     # Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
     # Embed.add_field(name = "Sample name: ", value = "sample value", inline = False)
@@ -218,31 +213,42 @@ async def get_rank(context, amount = 0):
     # await context.message.author.send(embed = Embed)
 
     # await context.send(Logging_Functions.data_insult)
-    # print(final_msg)
+
     await context.send(final_msg)
 
 
 
-# @client.command(aliases = ["r"])
-# async def rank(context, user: discord.Member = None):
+@client.command(aliases = ["r"])
+async def rank(context, user: discord.Member = None, amount = 0):
+    Logging_Functions.sort_data_rank()
+    amount = int(amount)
+    data_rank = Logging_Functions.data_rank
+    final_msg = "**Ranking:\t\t\tLength:**" # adds header to message
 
-#     def write_header_rank():
-#     with open (Insults_path, "w", newline = "") as Rankings_File:
-#         writer = csv.DictWriter(Insults_File, fieldnames = Logging_Functions.rankings_fieldnames)
-#         writer.writeheader()
+    print(f"user:{user}")
 
-# def download_data():
-#     with open (Insults_path, newline = "") as Insults_File:
-#         reader = csv.DictReader(Insults_File, fieldnames = ["Index:", "Author:", "Insult:"])
-#         global header, data
-#         header = next(reader)
-#         data = list(reader) # converts reader to list
-       
-# def upload_data():
-#     with open (Insults_path, "w", newline = "") as Insults_File:
-#         writer = csv.DictWriter(Insults_File, fieldnames = ["Index:", "Author:", "Insult:"])
-#         writer.writeheader()
-#         writer.writerows(data)
+    user_sorted_rankings = [row for row in data_rank if row[rankings_fieldnames[1]] == str(user)]
+    if amount == 0: # if no user input, send all rows for requested user in database
+        amount = len(user_sorted_rankings)
+    if amount > len(user_sorted_rankings):
+        await context.send(f"You requested more than the available rankings for {user}."\
+        f" There are {len(user_sorted_rankings)} available rankings for {user}.")
+        return
+    for row in range(amount):    # add rows to message
+        final_msg += f"\n{user_sorted_rankings[row][rankings_fieldnames[0]]}\t\t\t\t\t\t"\
+        f" {user_sorted_rankings[row][rankings_fieldnames[2]]}"
+    print(final_msg)
+
+    # Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
+    # Embed.add_field(name = "Sample name: ", value = "sample value", inline = False)
+    # Embed.set_footer(text = "footer shit haha")
+    # Embed.set_author(name = "Nikki the chiken")
+
+    # await context.message.author.send(embed = Embed)
+
+    # await context.send(Logging_Functions.data_insult)
+
+    await context.send(final_msg)
 
 
 
