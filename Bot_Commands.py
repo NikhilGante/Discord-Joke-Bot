@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from Logging_Functions import rankings_fieldnames, Insults_path, Rankings_Path
+from Logging_Functions import Insults, PP_Rankings, Jokes, Quotes
 import Logging_Functions
 import csv
 import operator
@@ -115,30 +115,30 @@ async def leave(parameter_list):
 @client.command()
 async def erase_all_insults(context):
     if(context.author.id == User_ID["Nikhil"]):
-        Logging_Functions.write_header_insult()
+        Insults.write_header()
     else:
         context.send("Only supreme memer CodingBoy56 has access to this command.")
 
 @client.command(aliases = ["ei"])
 async def erase_insult(context, index):
     index = int(index)
-    Logging_Functions.download_data_insult()
+    Insults.download_data()
 
-    if index > len(Logging_Functions.data_insult) or index < 1:
+    if index > len(Insults.data) or index < 1:
         await context.send("Index out of range")
     else:
-        Logging_Functions.data_insult.pop(index - 1)
-        for row in Logging_Functions.data_insult[index - 1: len(Logging_Functions.data_insult)]:
+        Insults.data.pop(index - 1)
+        for row in Insults.data[index - 1: len(Insults.data)]:
             row["Index:"] = int(row["Index:"])
             row["Index:"] -= 1
-        Logging_Functions.upload_data_insult()
+        Insults.upload_data()
         await context.send(f"Insult {index} succesfully deleted.")
 
 @client.command(aliases = ["si", "show insults"])
 async def show_insults(context):
-    Logging_Functions.download_data_insult()
+    Insults.download_data()
     final_msg = "**Index:\t\tAuthor:\t\t\t\t\t\t Insult:**" # adds header to message
-    for row in Logging_Functions.data_insult:    # add rows to message
+    for row in Insults.data:    # add rows to message
         final_msg += f"\n{row['Index:']}\t\t\t\t {row['Author:']}\t{row['Insult:']}"
 
     # Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
@@ -148,18 +148,23 @@ async def show_insults(context):
 
     # await context.message.author.send(embed = Embed)
 
-    # await context.send(Logging_Functions.data_insult)
+    # await context.send(Insults.data)
     # print(final_msg)
     await context.send(final_msg)
 
 @client.command(aliases = ["ri", "rand insult"])
 async def rand_insult(context, user: discord.Member = None):
-    Logging_Functions.download_data_insult()
-    await get_insult(context, random.randint(0, len(Logging_Functions.data_insult)), user)
+    Insults.download_data()
+    await get_insult(context, random.randint(0, len(Insults.data)), user)
 
 @client.command(aliases = ["gi", "get insult"])
 async def get_insult(context, index, user: discord.Member = None):
-    Logging_Functions.download_data_insult()
+    Insults.download_data()
+    index = int(index)
+    if index > len(Insults.data):
+        await context.send(f"You requested Insult #{index}. There are only {len(Insults.data)} insults available.")
+        return
+
     if user == None:
         print ("none reached")
         mention = ""
@@ -169,7 +174,7 @@ async def get_insult(context, index, user: discord.Member = None):
         print ("mention reached")
         mention = f"<@{user}>"
 
-    await context.send(f"{mention} {Logging_Functions.data_insult[int(index) - 1]['Insult:']}")  
+    await context.send(f"{mention} {Insults.data[index - 1]['Insult:']}")  
 
 @client.command(aliases = ["ps", "ppsize", "peepee size"])
 async def peepee_size(context):
@@ -184,25 +189,25 @@ async def peepee_size(context):
         finalStr += "Ayo same."
     await context.send(finalStr)
     
-    Logging_Functions.download_data_rank()
-    Logging_Functions.upload_data_rank()
-    with open (Rankings_Path, "a", newline = "") as Rankings_File:
-        writer = csv.DictWriter(Rankings_File, fieldnames = Logging_Functions.rankings_fieldnames)
-        writer.writerow({rankings_fieldnames[0] : f"{len(Logging_Functions.data_rank) + 1}",
-        rankings_fieldnames[1] : f"{author}", rankings_fieldnames[2] : f"{size}"})
+    PP_Rankings.download_data()
+    PP_Rankings.upload_data()
+    with open (PP_Rankings.path, "a", newline = "") as Rankings_File:
+        writer = csv.DictWriter(Rankings_File, fieldnames = PP_Rankings.fieldnames)
+        writer.writerow({PP_Rankings.fieldnames[0] : f"{len(PP_Rankings.data) + 1}",
+        PP_Rankings.fieldnames[1] : f"{author}", PP_Rankings.fieldnames[2] : f"{size}"})
 
 @client.command(aliases = ["gr", "get rank"])
 async def get_rank(context, amount = 0):
-    Logging_Functions.sort_data_rank()
+    PP_Rankings.sort_data()
     amount = int(amount)
-    data_rank = Logging_Functions.data_rank
+    data_rank = PP_Rankings.data
     if amount == 0: # if no user input, send all rows in database
         amount = len(data_rank)
     final_msg = "**Ranking:\t\t\tLength:\t\t\tOwner of PP:**" # adds header to message
     
     for row in range(amount):    # add rows to message
-        final_msg += f"\n{data_rank[row][rankings_fieldnames[0]]}\t\t\t\t\t\t"\
-        f" {data_rank[row][rankings_fieldnames[2]]}\t\t\t\t{data_rank[row][rankings_fieldnames[1]]}"
+        final_msg += f"\n{data_rank[row][PP_Rankings.fieldnames[0]]}\t\t\t\t\t\t"\
+        f" {data_rank[row][PP_Rankings.fieldnames[2]]}\t\t\t\t{data_rank[row][PP_Rankings.fieldnames[1]]}"
     print(final_msg)
 
     # Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
@@ -212,7 +217,7 @@ async def get_rank(context, amount = 0):
 
     # await context.message.author.send(embed = Embed)
 
-    # await context.send(Logging_Functions.data_insult)
+    # await context.send(Insults.data)
 
     await context.send(final_msg)
 
@@ -220,14 +225,14 @@ async def get_rank(context, amount = 0):
 
 @client.command(aliases = ["r"])
 async def rank(context, user: discord.Member = None, amount = 0):
-    Logging_Functions.sort_data_rank()
+    PP_Rankings.sort_data()
     amount = int(amount)
-    data_rank = Logging_Functions.data_rank
+    data_rank = PP_Rankings.data
     final_msg = "**Ranking:\t\t\tLength:**" # adds header to message
 
     print(f"user:{user}")
 
-    user_sorted_rankings = [row for row in data_rank if row[rankings_fieldnames[1]] == str(user)]
+    user_sorted_rankings = [row for row in data_rank if row[PP_Rankings.fieldnames[1]] == str(user)]
     if amount == 0: # if no user input, send all rows for requested user in database
         amount = len(user_sorted_rankings)
     if amount > len(user_sorted_rankings):
@@ -235,8 +240,8 @@ async def rank(context, user: discord.Member = None, amount = 0):
         f" There are {len(user_sorted_rankings)} available rankings for {user}.")
         return
     for row in range(amount):    # add rows to message
-        final_msg += f"\n{user_sorted_rankings[row][rankings_fieldnames[0]]}\t\t\t\t\t\t"\
-        f" {user_sorted_rankings[row][rankings_fieldnames[2]]}"
+        final_msg += f"\n{user_sorted_rankings[row][PP_Rankings.fieldnames[0]]}\t\t\t\t\t\t"\
+        f" {user_sorted_rankings[row][PP_Rankings.fieldnames[2]]}"
     print(final_msg)
 
     # Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
@@ -246,7 +251,7 @@ async def rank(context, user: discord.Member = None, amount = 0):
 
     # await context.message.author.send(embed = Embed)
 
-    # await context.send(Logging_Functions.data_insult)
+    # await context.send(Insults.data)
 
     await context.send(final_msg)
 

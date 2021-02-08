@@ -25,11 +25,11 @@ async def on_message(message):
     if "--" not in text:
             
         if str(channel) == "bot-requests":
-            Logging_Functions.download_data_insult()
-            Logging_Functions.upload_data_insult()
-            with open (Bot_Commands.Insults_path, "a", newline = "") as Insults_File:
+            Logging_Functions.Insults.download_data()
+            Logging_Functions.Insults.upload_data()
+            with open (Bot_Commands.Insults.path, "a", newline = "") as Insults_File:
                 writer = csv.DictWriter(Insults_File, fieldnames = ["Index:", "Author:", "Insult:"])
-                writer.writerow({"Index:" : f"{len(Logging_Functions.data_insult) + 1}", "Author:" : f"{author}", "Insult:" : f"{message.content}"})
+                writer.writerow({"Index:" : f"{len(Logging_Functions.Insults.data) + 1}", "Author:" : f"{author}", "Insult:" : f"{message.content}"})
        
         elif id != User_ID["Nikhil"]: #channel isn't bot-testing and user isn't me
             print(f"The channel is: {channel}")
