@@ -44,26 +44,18 @@ def upload_data_rank():
 
 def sort_data_rank():
     download_data_rank()
-    values = []
-    for row in data_rank:
-        values.append(row[rankings_fieldnames[2]])
- 
-    for start_val_id in range(len(values)-1):
-        # start_val = values[start_val_id]
-        # greatest = start_val
-        greatest_id = start_val_id
-        # vals_left = values[start_val_id + 1: len(values)]
-        for val_id in range(start_val_id, len(values)):
-            if values[val_id] > values[greatest_id]:    greatest_id = val_id
+    pp_len = rankings_fieldnames[2]
+    for starting_value_index in range(len(data_rank)-1):   # Sorts the rankings accordingly
+        greatest_value_index = starting_value_index
 
-        temp_val = values[greatest_id]
-        values[greatest_id] = values[start_val_id]
-        values[start_val_id] = temp_val
+        for index in range(starting_value_index, len(data_rank)):
+            if data_rank[index][pp_len] > data_rank[greatest_value_index][pp_len]:
+                greatest_value_index = index
 
-        # Replaces appropriate rows in data_rank list
-        temp_row = data_rank[greatest_id]
-        data_rank[greatest_id] = data_rank[start_val_id]
-        data_rank[start_val_id] = temp_row
+        # exchanges value at greatest index and value at starting index
+        temp_val = data_rank[greatest_value_index][pp_len]
+        data_rank[greatest_value_index][pp_len] = data_rank[starting_value_index][pp_len]
+        data_rank[starting_value_index][pp_len] = temp_val
 
     # gives each row the proper rank
     for row in data_rank:

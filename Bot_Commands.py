@@ -193,12 +193,22 @@ async def peepee_size(context):
         rankings_fieldnames[1] : f"{author}", rankings_fieldnames[2] : f"{size}"})
 
 @client.command(aliases = ["gr", "get rank"])
-async def get_rank(context):
+async def get_rank(context, amount = 0):
     Logging_Functions.sort_data_rank()
-    final_msg = "**Ranking:\tLength:\t\tOwner of PP:**" # adds header to message
-    for row in Logging_Functions.data_rank:    # add rows to message
-        final_msg += f"\n{row[rankings_fieldnames[0]]}\t\t\t\t\t {row[rankings_fieldnames[2]]}\t\t\t\t{row[rankings_fieldnames[1]]}"
+    amount = int(amount)
+    data_rank = Logging_Functions.data_rank
+    if amount == 0: # if no user input, send all rows in database
+        amount = len(data_rank)
+    final_msg = "**Ranking:\t\t\tLength:\t\t\tOwner of PP:**" # adds header to message
+    
+    for row in range(amount):    # add rows to message
+        final_msg += f"\n{data_rank[row][rankings_fieldnames[0]]}\t\t\t\t\t\t"\
+        f" {data_rank[row][rankings_fieldnames[2]]}\t\t\t\t{data_rank[row][rankings_fieldnames[1]]}"
     print(final_msg)
+    
+    # for row in Logging_Functions.data_rank:    # add rows to message
+    #     final_msg += f"\n{row[rankings_fieldnames[0]]}\t\t\t\t\t\t {row[rankings_fieldnames[2]]}\t\t\t\t{row[rankings_fieldnames[1]]}"
+    # print(final_msg)
 
     # Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
     # Embed.add_field(name = "Sample name: ", value = "sample value", inline = False)
