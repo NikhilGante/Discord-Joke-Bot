@@ -1,102 +1,14 @@
 import discord
 from discord.ext import commands
-from Database import Insults, PP_Length, Jokes, Quotes
-import Database
-import csv
-import operator
+from Bot_Commands.Database import Insults, PP_Length, Jokes, Quotes
+from Bot_Commands import Database
 import random
+import csv
 from User_ID import User_ID
-
-client = commands.Bot(command_prefix = "--")
-
-@client.command(aliases = ["h", "hm", "help me"])
-async def help_me(context):
-    
-    author = context.author
-    # name = author.display_name
-    id = author.id
-    mention = f"<@{id}>"
-    # channel = context.channel
-
-    await context.send(f"{mention} I've sent you a list of all my commands")
-    await author.send("I just want to let you know... you're a little bitch :)")
-    Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
-    Embed.add_field(name = "Sample name: ", value = "sample value", inline = False)
-    Embed.set_footer(text = "footer shit haha")
-    Embed.set_author(name = "Nikki the chiken")
-
-    await context.message.author.send(embed = Embed)
+from Bot_Commands.Miscellaneous import client
 
 
-# 74412C
-@client.command(aliases = ["p", "pf", "p_f", "print"])
-async def printf(context, phrase = "", amount = 0):
-    for count in range(int(amount)):
-        await context.send(f"{count + 1}: {phrase}")
-    await context.send("Done.")
-    
-@client.command(aliases = ["c"])
-async def clear(context, amount = 1):    
-    if amount == -256:
-            await context.channel.purge(bulk = True)
-
-    else:
-        await context.channel.purge(limit = amount + 1)
-
-@client.command()
-async def kick(context, member: discord.Member, *, reason = None):
-    await member.kick(reason = reason)
-    await context.send(f"{member.mention} has been kicked")
-
-@client.command()
-async def ban(context, member: discord.Member, *, reason = None):
-    await member.ban(reason = reason)
-    await context.send(f"{member.mention} has been banned")
-
-@client.command()
-async def unban(context, *, member):
-    banned_users = await context.guild.bans()
-    member_name, member_discriminator = member.split("#")
-
-    for ban_entry in banned_users:
-        user = ban_entry.user
-
-        if (user.name, user.discriminator) == (member_name, member_discriminator):
-            await context.guild.unban(user)
-            await context.send(f"{member.mention} has been unbanned")
-            return
-
-@client.command
-async def join(context):
-    # channel = context.message.author.voice.voice_channel
-    #     channel = context.message.author.voice.voice_channel
-    # context.voice_channel
-    # discord.VoiceProtocol(client, context.voice_channel)
-
-    # protocol = discord.VoiceProtocol(client, context.voice_channel)
-
-    # await voiceChannel.connect(channel)
-    # await protocol.connect(60,True)
-    # await voiceChannel.connect(channel)
-    # await connect(*, timeout=60.0, reconnect=True, cls=<class 'discord.voice_client.VoiceClient'>)
-    pass
-
-@client.command
-async def leave(parameter_list):
-    pass
-
-
-# @client.command (aliases = ["random image", "random img", "rand image", "randimg", "rand img", "ri"])
-# async def random_image(context):
-
-
-#     images = [, , , ]
-
-#     random_image = random.choice(images)
-
-#     context.send(file = discord.File(random_image))
-
-# -------------------------- INSULTS SECTION ----------------------------------  
+# -------------------------- INSULTS SECTION --------------------------  
 
 @client.command()
 async def erase_all_insults(context):
@@ -160,7 +72,7 @@ async def get_insult(context, index, user: discord.Member = None):
 
     await context.send(f"{mention} {Insults.data[index - 1]['Insult:']}")  
 
-# -------------------------- JOKES SECTION ----------------------------------  
+# -------------------------- JOKES SECTION --------------------------  
 
 @client.command()
 async def erase_all_jokes(context):
@@ -224,7 +136,7 @@ async def get_joke(context, index, user: discord.Member = None):
 
     await context.send(f"{mention} {Jokes.data[index - 1]['Joke:']}")  
 
-# -------------------------- QUOTES SECTION ----------------------------------  
+# -------------------------- QUOTES SECTION --------------------------  
 
 @client.command()
 async def erase_all_quotes(context):
@@ -287,7 +199,7 @@ async def get_quote(context, index, user: discord.Member = None):
 
     await context.send(f"{mention} {Quotes.data[index - 1]['Quote:']}")  
 
-# -------------------------- PP_LENGTH SECTION ----------------------------------  
+# -------------------------- PP_LENGTH SECTION --------------------------  
 
 @client.command(aliases = ["ps", "ppsize", "peepee size"])
 async def peepee_size(context):
@@ -361,4 +273,3 @@ async def rank(context, user: discord.Member = None, amount = 0):
     # await context.send(Insults.data)
 
     await context.send(final_msg)
-

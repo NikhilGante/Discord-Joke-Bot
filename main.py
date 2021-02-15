@@ -1,11 +1,12 @@
 import discord
 import csv
-from Database import Insults, PP_Length, Jokes, Quotes
+from Bot_Commands.Database import Insults, PP_Length, Jokes, Quotes
 from discord.ext import commands
 from Channel_ID import text, voice
 from User_ID import User_ID, bot_Token
-import Bot_Commands
-from Bot_Commands import client
+from Bot_Commands import Logging_Functions
+from Bot_Commands.Voice import client
+from Bot_Commands.Miscellaneous import client
 from Keep_Alive import keep_alive
 
 @client.event
@@ -27,21 +28,21 @@ async def on_message(message):
         if str(channel) == Insults.channel:
             Insults.download_data()
             Insults.upload_data()
-            with open (Bot_Commands.Insults.path, "a", newline = "") as Insults_File:
+            with open (Logging_Functions.Insults.path, "a", newline = "") as Insults_File:
                 writer = csv.DictWriter(Insults_File, fieldnames = ["Index:", "Author:", "Insult:"])
                 writer.writerow({"Index:" : f"{len(Insults.data) + 1}", "Author:" : f"{author}", "Insult:" : f"{message.content}"})
      
         elif str(channel) == Jokes.channel:
             Jokes.download_data()
             Jokes.upload_data()
-            with open (Bot_Commands.Jokes.path, "a", newline = "") as Jokes_File:
+            with open (Logging_Functions.Jokes.path, "a", newline = "") as Jokes_File:
                 writer = csv.DictWriter(Jokes_File, fieldnames = ["Index:", "Author:", "Joke:"])
                 writer.writerow({"Index:" : f"{len(Jokes.data) + 1}", "Author:" : f"{author}", "Joke:" : f"{message.content}"})       
 
         elif str(channel) == Quotes.channel:
             Quotes.download_data()
             Quotes.upload_data()
-            with open (Bot_Commands.Quotes.path, "a", newline = "") as Quotes_File:
+            with open (Logging_Functions.Quotes.path, "a", newline = "") as Quotes_File:
                 writer = csv.DictWriter(Quotes_File, fieldnames = ["Index:", "Author:", "Quote:"])
                 writer.writerow({"Index:" : f"{len(Quotes.data) + 1}", "Author:" : f"{author}", "Quote:" : f"{message.content}"})     
 

@@ -28,7 +28,7 @@ class Rankings(Database):
         for starting_value_index in range(len(self.data)-1):   # Sorts the rankings accordingly
             greatest_value_index = starting_value_index
 
-            for index in range(starting_value_index, len(self.data)):
+            for index in range(starting_value_index, len(self.data)-1):
                 if self.data[index][self.fieldnames[2]] > self.data[greatest_value_index][self.fieldnames[2]]:
                     greatest_value_index = index
 
@@ -70,3 +70,5 @@ Quotes.fieldnames = ["Index:", "Author:", "Quote:"]
 def truncate(n, decimals = 0):
     multiplier = 10 ** decimals
     return int(n * multiplier) / multiplier
+
+
