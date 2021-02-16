@@ -13,10 +13,7 @@ async def join(context):
 @client.command(aliases = ["l"])
 async def leave(context):
     voice = discord.utils.get(client.voice_clients, guild = context.guild)
-    if voice.connected():
-        voice.disconnect()
-    else:
-        await context.send("Innovirus.exe is not currently connected to a voice channel.")
+    await voice.disconnect()
 
 @client.command()
 async def pause(context):
