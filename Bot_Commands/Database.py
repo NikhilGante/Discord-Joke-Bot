@@ -95,6 +95,11 @@ class Rankings(Database):
                 if self.data[index][self.fieldnames[2]] > self.data[greatest_value_index][self.fieldnames[2]]:
                     greatest_value_index = index
 
+            # exchanges user at greatest index and value at starting index
+            temp_val = self.data[greatest_value_index][self.fieldnames[1]]
+            self.data[greatest_value_index][self.fieldnames[1]] = self.data[starting_value_index][self.fieldnames[1]]
+            self.data[starting_value_index][self.fieldnames[1]] = temp_val
+
             # exchanges value at greatest index and value at starting index
             temp_val = self.data[greatest_value_index][self.fieldnames[2]]
             self.data[greatest_value_index][self.fieldnames[2]] = self.data[starting_value_index][self.fieldnames[2]]
