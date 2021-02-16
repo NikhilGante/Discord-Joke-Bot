@@ -38,21 +38,7 @@ async def random_insult(context, user: discord.Member = None):
 
 @client.command(aliases = ["gi", "get insult"])
 async def get_insult(context, index, user: discord.Member = None):
-    # Insults.download_data()
-    # index = int(index)
-    # if index > len(Insults.data):
-    #     await context.send(f"You requested Insult #{index}. There are only {len(Insults.data)} insults available.")
-    #     return
-
-    # if user == None:     mention = ""
-
-    # else:
-    #     user = user.id
-    #     mention = f"<@{user}>"
-
-    # await context.send(f"{mention} {Insults.data[index - 1]['Insult:']}")  
     await Insults.get(context, index, user)
-    # await context.send(Insults.final_string) 
 
 # -------------------------- JOKES SECTION --------------------------  
 
@@ -84,19 +70,7 @@ async def random_joke(context, user: discord.Member = None):
 
 @client.command(aliases = ["gj", "get joke"])
 async def get_joke(context, index, user: discord.Member = None):
-    Jokes.download_data()
-    index = int(index)
-    if index > len(Jokes.data):
-        await context.send(f"You requested joke #{index}. There are only {len(Jokes.data)} jokes available.")
-        return
-
-    if user == None:    mention = ""
-
-    else:
-        user = user.id
-        mention = f"<@{user}>"
-
-    await context.send(f"{mention} {Jokes.data[index - 1]['Joke:']}")  
+    await Jokes.get(context, index, user) 
 
 # -------------------------- QUOTES SECTION --------------------------  
 
@@ -127,19 +101,7 @@ async def random_quote(context, user: discord.Member = None):
 
 @client.command(aliases = ["gq", "get quote"])
 async def get_quote(context, index, user: discord.Member = None):
-    Quotes.download_data()
-    index = int(index)
-    if index > len(Quotes.data):
-        await context.send(f"You requested quote #{index}. There are only {len(Quotes.data)} quotes available.")
-        return
-
-    if user == None:    mention = ""
-
-    else:
-        user = user.id
-        mention = f"<@{user}>"
-
-    await context.send(f"{mention} {Quotes.data[index - 1]['Quote:']}")  
+    await Quotes.get(context, index, user)
 
 # -------------------------- PP_LENGTH SECTION --------------------------  
 

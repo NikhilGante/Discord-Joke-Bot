@@ -70,16 +70,11 @@ class Database:
         self.download_data()
         index = int(index)
         if index > len(self.data):
-            await context.send(f"You requested Insult #{index}. There are only {len(self.data)} insults available.")
-            # self.final_string = (f"You requested Insult #{index}. There are only {len(self.data)} insults available.")
-            return
-        if user == None:
-            mention = ""
-        else:
-            mention = f"<@{user}>"
+            await context.send(f"You requested {self.name.lower()} #{index}. There are only {len(self.data)} {self.name.lower()}s available.")
+        
+        mention = "" if user == None else f"<@{user.id}>"
+
         await context.send(f"{mention} {self.data[index - 1][self.fieldnames[2]]}")
-        # self.final_string = f"{mention} {self.data[index - 1][self.fieldnames[2]]}"
-        # await context.send(self.final_string)
     
     async def random(self, context, user: discord.Member = None):
         self.download_data()
@@ -146,9 +141,6 @@ PP_Length.fieldnames = ["Ranking:", "User:", "Length:"]
 Jokes.fieldnames = ["Index:", "Author:", "Joke:"]
 Quotes.fieldnames = ["Index:", "Author:", "Quote:"]
 
-
 def truncate(n, decimals = 0):
     multiplier = 10 ** decimals
     return int(n * multiplier) / multiplier
-
-
