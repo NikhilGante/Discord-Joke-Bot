@@ -1,12 +1,12 @@
 import discord
 import csv
-from Bot_Commands.Database import Insults, PP_Length, Jokes, Quotes
+from Database import Insults, PP_Length, Jokes, Quotes
 from discord.ext import commands
 from Channel_ID import text, voice
 from User_ID import User_ID, bot_Token
-from Bot_Commands import Logging_Commands
-from Bot_Commands.Voice import client
-from Bot_Commands.Miscellaneous import client
+import Logging_Commands
+from Voice import client
+from Miscellaneous import client
 from Keep_Alive import keep_alive
 
 @client.event
@@ -21,9 +21,10 @@ async def on_message(message):
     content = message.content
     text = content.lower()
 
+
     if author == client.user: # ignores message if it was sent from bot
         return
-
+    
     if "--" not in text:
             
         if str(channel) == Insults.channel:
