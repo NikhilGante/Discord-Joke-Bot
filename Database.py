@@ -12,6 +12,7 @@ class Database:
     channel = ""
     name = ""
     final_string = ""
+    field_strings = []
 
     def write_header(self):
         with open (self.path, "w", newline = "") as File:
@@ -63,11 +64,29 @@ class Database:
 
     async def show(self, context):
         self.download_data()
-        self.final_string = f"**{self.fn[0]}\t\t{self.fn[1]}\t\t\t\t  \
-        {self.fn[2]}**" # adds header to message
-        for row in self.data:    # add rows to message
-            self.final_string += f"\n{row[self.fn[0]]}\t\t\t\t {row[self.fn[1]]}\t{row[self.fn[2]]}"
-        await context.send(self.final_string)
+        Embed = discord.Embed(title = self.name, description = f"All of our {self.name.lower()}s so far.", color = 0x3a5af2)
+        self.field_strings = ["", "", ""]
+        for row in range(len(self.data)):
+            for field in range(len(self.data[row])):
+                self.field_strings[field] += f"\n{self.data[row][self.fn[field]]}"
+        for string in range(len(self.field_strings)):
+            Embed.add_field(name = self.fn[string], value = self.field_strings[string], inline = True)
+
+            # self.fn[string]
+            # self.field_strings[string]
+        # Embed.add_field(name = "Sample name: ", value = "sample value", inline = True)
+        # Embed.set_footer(text = "footer shit haha")
+        # Embed.set_author(name = "Nikki the chiken")
+        await context.send(embed = Embed)
+
+        # await context.send(Insults.data)
+        # print(final_msg)
+
+        # self.final_string = f"**{self.fn[0]}\t\t{self.fn[1]}\t\t\t\t  \
+        # {self.fn[2]}**" # adds header to message
+        # for row in self.data:    # add rows to message
+        #     self.final_string += f"\n{row[self.fn[0]]}\t\t\t\t {row[self.fn[1]]}\t{row[self.fn[2]]}"
+        # await context.send(self.final_string)
 
     async def get(self, context, index, user: discord.Member = None):
         self.download_data()
