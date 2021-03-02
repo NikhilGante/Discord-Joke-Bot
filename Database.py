@@ -3,7 +3,7 @@ import csv
 from User_ID import User_ID
 import random
 
-max_len = 62 # max amount of lines that can be sent on discord
+max_len = 68 # max amount of lines that can be sent on discord
 
 
 class Database:
@@ -13,6 +13,7 @@ class Database:
     name = ""
     final_string = ""
     field_strings = []
+    embed_colour = 0x3a5af2
 
     def write_header(self):
         with open (self.path, "w", newline = "") as File:
@@ -64,7 +65,7 @@ class Database:
 
     async def show(self, context):
         self.download_data()
-        Embed = discord.Embed(title = self.name, description = f"All of our {self.name.lower()}s so far.", color = 0x3a5af2)
+        Embed = discord.Embed(title = self.name, description = f"All of your {self.name.lower()}s so far.", color = self.embed_colour)
         self.field_strings = ["", "", ""]
         for row in range(len(self.data)):
             for field in range(len(self.data[row])):
@@ -78,15 +79,6 @@ class Database:
         # Embed.set_footer(text = "footer shit haha")
         # Embed.set_author(name = "Nikki the chiken")
         await context.send(embed = Embed)
-
-        # await context.send(Insults.data)
-        # print(final_msg)
-
-        # self.final_string = f"**{self.fn[0]}\t\t{self.fn[1]}\t\t\t\t  \
-        # {self.fn[2]}**" # adds header to message
-        # for row in self.data:    # add rows to message
-        #     self.final_string += f"\n{row[self.fn[0]]}\t\t\t\t {row[self.fn[1]]}\t{row[self.fn[2]]}"
-        # await context.send(self.final_string)
 
     async def get(self, context, index, user: discord.Member = None):
         self.download_data()
@@ -112,16 +104,7 @@ class Rankings(Database):
                 if self.data[index][self.fn[2]] > self.data[max_id][self.fn[2]]:
                     max_id = index
             # exchanges user at greatest index and value at starting index
-            # temp_val = self.data[max_id][self.fn[1]]
-            # self.data[max_id][self.fn[1]] = self.data[start_id][self.fn[1]]
-            # self.data[start_id][self.fn[1]] = temp_val
             self.data[max_id][self.fn[1]], self.data[start_id][self.fn[1]]  = self.data[start_id][self.fn[1]], self.data[max_id][self.fn[1]]
-            # exchanges value at greatest index and value at starting index
-            """
-            temp_val = self.data[max_id][self.fn[2]]
-            self.data[max_id][self.fn[2]] = self.data[start_id][self.fn[2]]
-            self.data[start_id][self.fn[2]] = temp_val
-            """
             self.data[max_id][self.fn[2]], self.data[start_id][self.fn[2]]  = self.data[start_id][self.fn[2]], self.data[max_id][self.fn[2]]
 
         # gives each row the proper rank
@@ -129,12 +112,76 @@ class Rankings(Database):
             row[self.fn[0]] = self.data.index(row) + 1
 
         self.upload_data()
+    
+    async def get_rank(self, context, amount):
+        self.sort_data()
+        amount = int(amount)
+
+        # if no user input, or input is more than what discord allows, send as many rows as discord allows
+        if amount == 0:
+            if len(self.data) > max_len:
+                amount = max_len
+            elif len(self.data) <= max_len:
+                amount = len(self.data)
+        elif amount > len(self.data):
+            await context.send(f"You requested more than the available in database."\
+            f" There are {len(self.data)} available rankings in database.")
+            return
+        elif amount > max_len:
+            amount = max_len
+
+        # show message
+        self.download_data()
+        Embed = discord.Embed(title = f"{self.name}s", description = f"All of your {self.name.lower()}s so far.", color = self.embed_colour)
+        self.field_strings = ["", "", ""]
+        
+        for row in range(amount):
+            for field in range(len(self.data[row])):
+                self.field_strings[field] += f"\n{self.data[row][self.fn[field]]}"
+        for string in range(len(self.field_strings)):
+            Embed.add_field(name = self.fn[string], value = self.field_strings[string], inline = True)
+        
+        await context.send(embed = Embed)
+
+    async def rank(self, context, amount, user: discord.Member = None):
+        self.sort_data()
+        amount = int(amount)
+        final_msg = "**Ranking:\t\t\tLength:**" # adds header to message
+
+        user_sorted_rankings = [row for row in self.data if row[self.fn[1]] == str(user)]
+
+        if amount == 0: # if no user input, send all available rows for requested user in database
+            if len(user_sorted_rankings) > max_len:    # if discord can't send all rows, send as many as possible
+                amount = max_len
+            elif len(user_sorted_rankings) <= max_len:
+                amount = len(user_sorted_rankings)
+        elif amount > len(user_sorted_rankings):
+            await context.send(f"You requested more than the available rankings for {user}."\
+            f" There are {len(user_sorted_rankings)} available rankings for {user}.")
+        elif amount > max_len:    # if discord can't send all rows, send as many as possible
+            amount = max_len
+        else:
+            print("Unknown condition")
+        for row in range(amount):    # add rows to message
+            final_msg += f"\n{user_sorted_rankings[row][self.fn[0]]}\t\t\t\t\t\t"\
+            f" {user_sorted_rankings[row][self.fn[2]]}"
+            
+        # show message
+        self.download_data()
+        Embed = discord.Embed(title = f"{self.name}s", description = f"All of {user}'s {self.name.lower()}s so far.", color = self.embed_colour)
+        self.field_strings = ["", "", ""]
+        
+        for row in range(amount):
+            for field in range(len(self.data[row])):
+                self.field_strings[field] += f"\n{self.data[row][self.fn[field]]}"
+        for string in range(len(self.field_strings)):
+            Embed.add_field(name = self.fn[string], value = self.field_strings[string], inline = True)
+        
+        await context.send(embed = Embed)
+        
 
 # class Queue(Database):
 #     def 
-
-
-
 
 # create database objects
 Insults = Database()
@@ -142,28 +189,34 @@ PP_Length = Rankings()
 Jokes = Database()
 Quotes = Database()
 
-# sets names
+# defines names
 Insults.name = "Insult"
-# PP_Length.name = ""
+PP_Length.name = "PP length"
 Jokes.name = "Joke"
 Quotes.name = "Quote"
 
-# sets csv file paths
+# defines csv file paths
 Insults.path = "C:/Users/HP/OneDrive/Documents/GitHub/Discord-Insult-Bot-Database/Insults.csv"
 PP_Length.path = "C:/Users/HP/OneDrive/Documents/GitHub/Discord-Insult-Bot-Database/PP_Length.csv"
 Jokes.path = "C:/Users/HP/OneDrive/Documents/GitHub/Discord-Insult-Bot-Database/Jokes.csv"
 Quotes.path = "C:/Users/HP/OneDrive/Documents/GitHub/Discord-Insult-Bot-Database/Quotes.csv"
 
-# sets channels
+# defines channels
 Insults.channel = "bot-insults"
 Jokes.channel = "bot-jokes"
 Quotes.channel = "bot-quotes"
 
-# sets fieldnames
+# defines fieldnames
 Insults.fn = ["Index:", "Author:", "Insult:"]
 PP_Length.fn = ["Ranking:", "User:", "Length:"]
 Jokes.fn = ["Index:", "Author:", "Joke:"]
 Quotes.fn = ["Index:", "Author:", "Quote:"]
+
+# defines embed colours
+Insults.embed_colour = 0x3a5af2
+PP_Length.embed_colour = 0x1e8c34
+Jokes.embed_colour = 0x23eeb7
+Quotes.embed_colour = 0x06dba3
 
 def truncate(n, decimals = 0):
     multiplier = 10 ** decimals
