@@ -45,7 +45,8 @@ async def on_message(message):
 
         if " pp" in text or "penis" in text or "dick" in text or "cock" in text or text == "pp":
             await channel.send("ligma penis")
-
+        if "mommy milkers" in text:
+            await channel.send("I love mommy milkers!")
         if id == User_ID["Liam"]:    
             await channel.send("Liam, you're kinda cute")
 

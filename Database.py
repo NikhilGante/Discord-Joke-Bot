@@ -5,7 +5,6 @@ import random
 
 max_len = 68 # max amount of lines that can be sent on discord
 
-
 class Database:
     path = ""
     fn = [] # fieldnames
@@ -176,7 +175,8 @@ class Rankings(Database):
                 self.field_strings[field] += f"\n{self.data[row][self.fn[field]]}"
         for string in range(len(self.field_strings)):
             Embed.add_field(name = self.fn[string], value = self.field_strings[string], inline = True)
-        
+            # Embed.set_footer(text = "footer shit haha")
+            # Embed.set_author(name = "Nikki the chiken")
         await context.send(embed = Embed)
         
 

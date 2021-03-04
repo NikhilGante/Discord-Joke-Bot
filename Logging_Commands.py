@@ -4,7 +4,6 @@ from Database import Insults, PP_Length, Jokes, Quotes, max_len
 import Database
 import random
 import csv
-from User_ID import User_ID
 from Miscellaneous import client
 
 # -------------------------- INSULTS SECTION --------------------------  
@@ -98,37 +97,4 @@ async def get_rank(context, amount = 0):
 
 @client.command(aliases = ["r"])
 async def rank(context, user: discord.Member = None, amount = 0):
-    # PP_Length.sort_data()
-    # amount = int(amount)
-    # final_msg = "**Ranking:\t\t\tLength:**" # adds header to message
-
-    # user_sorted_rankings = [row for row in PP_Length.data if row[PP_Length.fn[1]] == str(user)]
-    # print(len(user_sorted_rankings))
-    # print(amount)
-    # if amount == 0: # if no user input, send all available rows for requested user in database
-    #     if len(user_sorted_rankings) > max_len:    # if discord can't send all rows, send as many as possible
-    #         amount = max_len
-    #     elif len(user_sorted_rankings) <= max_len:
-    #         amount = len(user_sorted_rankings)
-    # elif amount > len(user_sorted_rankings):
-    #     await context.send(f"You requested more than the available rankings for {user}."\
-    #     f" There are {len(user_sorted_rankings)} available rankings for {user}.")
-    # elif amount > max_len:    # if discord can't send all rows, send as many as possible
-    #     amount = max_len
-    # else:
-    #     print("yooo")
-    # for row in range(amount):    # add rows to message
-    #     final_msg += f"\n{user_sorted_rankings[row][PP_Length.fn[0]]}\t\t\t\t\t\t"\
-    #     f" {user_sorted_rankings[row][PP_Length.fn[2]]}"
-
-    # Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
-    # Embed.add_field(name = "Sample name: ", value = "sample value", inline = False)
-    # Embed.set_footer(text = "footer shit haha")
-    # Embed.set_author(name = "Nikki the chiken")
-
-    # await context.message.author.send(embed = Embed)
-
-    # await context.send(Insults.data)
-
-    # await context.send(final_msg)
     await PP_Length.rank(context, amount, user) # arguments are ordered differently for a reason
