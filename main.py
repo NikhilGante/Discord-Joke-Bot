@@ -5,6 +5,7 @@ from discord.ext import commands
 from Channel_ID import text, voice
 from User_ID import User_ID, bot_Token
 import Logging_Commands
+import Help_Commands
 from Voice import client
 from Miscellaneous import client
 from Keep_Alive import keep_alive

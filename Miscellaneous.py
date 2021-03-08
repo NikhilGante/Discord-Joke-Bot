@@ -3,23 +3,23 @@ from discord.ext import commands
 
 client = commands.Bot(command_prefix = "--")
 
-@client.command(aliases = ["h", "hm", "help me"])
-async def help_me(context):
+# @client.command(aliases = ["h", "hm", "help me"])
+# async def help_me(context):
     
-    author = context.author
-    # name = author.display_name
-    id = author.id
-    mention = f"<@{id}>"
-    # channel = context.channel
+#     author = context.author
+#     # name = author.display_name
+#     id = author.id
+#     mention = f"<@{id}>"
+#     # channel = context.channel
 
-    await context.send(f"{mention} I've sent you a list of all my commands")
-    await author.send("I just want to let you know... you're a little bitch :)")
-    Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
-    Embed.add_field(name = "Sample name: ", value = "sample value", inline = False)
-    Embed.set_footer(text = "footer shit haha")
-    Embed.set_author(name = "Nikki the chiken")
+#     await context.send(f"{mention} I've sent you a list of all my commands")
+#     await author.send("I just want to let you know... you're a little bitch :)")
+#     Embed = discord.Embed(title = "PP memes", description = "All of our quotes so far", color = 0x3a5af2)
+#     Embed.add_field(name = "Sample name: ", value = "sample value", inline = False)
+#     Embed.set_footer(text = "footer shit haha")
+#     Embed.set_author(name = "Nikki the chiken")
 
-    await context.message.author.send(embed = Embed)
+#     await context.message.author.send(embed = Embed)
 
 
 # 74412C
