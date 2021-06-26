@@ -163,7 +163,7 @@ class Rankings(Database):
         elif amount > max_len:    # if discord can't send all rows, send as many as possible
             amount = max_len
         else:
-            print(f"Sucess or Unknown condition triggered | amount received: {amount}")
+            print(f"Success or Unknown condition triggered | amount received: {amount}")
             
         # shows message
         self.download_data()

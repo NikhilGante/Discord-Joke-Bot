@@ -76,7 +76,7 @@ async def get_quote(context, index, user: discord.Member = None):
 
 @client.command(aliases = ["ps", "ppsize", "peepee size"])
 async def peepee_size(context):
-    size = Database.truncate(random.uniform(0, 10), 2)
+    size = Database.truncate(random.uniform(0, 10.01), 2)
     author = str(context.author)
     finalStr = (f"{author}'s peepee is {size} inches long.\n")
     if size > 5:
